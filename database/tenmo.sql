@@ -1,8 +1,8 @@
 BEGIN TRANSACTION;
 
-DROP TABLE IF EXISTS tenmo_user, account;
+DROP TABLE IF EXISTS tenmo_user, account, transfer;
 
-DROP SEQUENCE IF EXISTS seq_user_id, seq_account_id;
+DROP SEQUENCE IF EXISTS seq_user_id, seq_account_id, seq_transfer_id;
 
 -- Sequence to start user_id values at 1001 instead of 1
 CREATE SEQUENCE seq_user_id
@@ -33,5 +33,23 @@ CREATE TABLE account (
 	CONSTRAINT FK_account_tenmo_user FOREIGN KEY (user_id) REFERENCES tenmo_user (user_id)
 );
 
+CREATE SEQUENCE seq_transfer_id
+  INCREMENT BY 1
+  START WITH 1
+  NO MAXVALUE;
+  
+CREATE TABLE transfer (
+	transfer_id int NOT NULL DEFAULT nextval('seq_transfer_id'),
+	sender_account_id int NOT NULL,
+	recipient_account_id int NOT NULL,
+	--date_and_time timestamp NOT NULL DEFAULT NOW(),
+	status varchar(20),
+	amount numeric(9,2),
+	CONSTRAINT PK_transfer_id PRIMARY KEY (transfer_id),
+	CONSTRAINT FK_sender_account_id FOREIGN KEY (sender_account_id) REFERENCES account (account_id),
+	CONSTRAINT FK_recipient_account_id FOREIGN KEY (recipient_account_id) REFERENCES account (account_id)
+	
+);
 
 COMMIT;
+
