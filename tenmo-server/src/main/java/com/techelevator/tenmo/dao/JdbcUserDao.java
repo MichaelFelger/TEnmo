@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-//@
+@Component
 public class JdbcUserDao implements UserDao {
 
     private JdbcTemplate jdbcTemplate;

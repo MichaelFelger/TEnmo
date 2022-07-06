@@ -4,10 +4,12 @@ import com.techelevator.tenmo.model.Transfer;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
 
 import javax.xml.crypto.Data;
 import java.util.List;
 
+@Component
 public class JdbcTransferDao implements TransferDao{
 
     private JdbcTemplate jdbcTemplate;
