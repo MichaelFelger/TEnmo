@@ -1,5 +1,32 @@
 package com.techelevator.tenmo.dao;
 
-public class JdbcAccountDao {
+import com.techelevator.tenmo.model.Account;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
+
+import java.math.BigDecimal;
+
+@Component
+public class JdbcAccountDao implements AccountDao{
+
+    private JdbcTemplate jdbcTemplate;
+
+    @Override
+    public BigDecimal getBalanceByAccountId(Long accountId) {
+        String sql = "SELECT balance FROM account WHERE account_id = ?;";
+        BigDecimal balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, "balance");
+        return balance;
+        }
+
+//    private Account mapRowToAccount(SqlRowSet rs){
+//        Account account = new Account();
+//        account.setId(rs.getLong("account_id"));
+//        account.setBalance(rs.getBigDecimal("balance"));
+//        account.setUserId(rs.getLong("user_id"));
+//        return account;
+//    }
 
 }
+
+
