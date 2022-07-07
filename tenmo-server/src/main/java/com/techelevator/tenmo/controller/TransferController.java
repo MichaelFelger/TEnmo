@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.*;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.security.jwt.TokenProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -28,14 +29,19 @@ public class TransferController {
         return userDao.findAll();
     }
 
-//    @RequestMapping(value = "/users/{username}/balance", method = RequestMethod.GET)
-//    public BigDecimal getBalance(@PathVariable String username){
-//        return accountDao.getBalanceByUsername(username);
-//    }
 
     @RequestMapping(value = "/users/{id}/balance", method = RequestMethod.GET)
     public BigDecimal getMyBalance(@PathVariable(name = "id") Long accountId){
         return accountDao.getBalanceByAccountId(accountId);
+    }
+
+    @RequestMapping(value = "/transfers", method = RequestMethod.POST)
+    public Transfer createTransfer(@RequestBody Transfer transfer) {
+        if (transfer != null) {
+            transferDao.createTransfer(transfer);
+            return transfer;
+        }
+        return null;
     }
 
 

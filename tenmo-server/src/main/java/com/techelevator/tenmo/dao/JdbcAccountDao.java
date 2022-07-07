@@ -23,15 +23,6 @@ public class JdbcAccountDao implements AccountDao {
         return balance;
     }
 
-    @Override
-    public BigDecimal getBalanceByUsername(String username) {
-        BigDecimal balance = null;
-        String sql = "SELECT balance FROM account AS a JOIN tenmo_user AS u ON a.user_id = u.user_id WHERE username = ?;";
-        balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, username);
-
-        return balance;
-    }
-
     private Account mapRowToAccount(SqlRowSet rs){
         Account account = new Account();
         account.setId(rs.getLong("account_id"));

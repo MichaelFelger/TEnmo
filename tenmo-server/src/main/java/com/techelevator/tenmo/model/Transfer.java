@@ -1,25 +1,30 @@
 package com.techelevator.tenmo.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 
 public class Transfer {
 
-    private Long transferId;
+
     private Long senderId;
+    private Long transferId;
     private Long recipientId;
-    private LocalDate timestamp = LocalDate.now();
+    private Timestamp timestamp;
     private String transferStatus;
     private BigDecimal transferAmount;
 
     public Transfer () { }
+    Account account = new Account();
 
-    public Transfer(Long transferId, Long senderId, Long recipientId, LocalDate timestamp, String transferStatus, BigDecimal transferAmount){
+    public Transfer(Long transferId, Long senderId, Long recipientId, Timestamp timestamp, String transferStatus, BigDecimal transferAmount){
         this.transferId = transferId;
-        this.senderId = senderId;
-        this.recipientId = recipientId;
+        this.senderId = account.getId();
+        this.recipientId = account.getId();
         this.timestamp = timestamp;
-        this.transferStatus = "Approved";
+        this.transferStatus = transferStatus;
         this.transferAmount = transferAmount;
     }
 
@@ -35,7 +40,7 @@ public class Transfer {
         this.recipientId = recipientId;
     }
 
-    public void setTimestamp(LocalDate timestamp) {
+    public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -59,7 +64,7 @@ public class Transfer {
         return recipientId;
     }
 
-    public LocalDate getTimestamp() {
+    public Timestamp getTimestamp() {
         return timestamp;
     }
 
