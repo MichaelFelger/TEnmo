@@ -5,9 +5,11 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.xml.crypto.Data;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -41,6 +43,7 @@ public class JdbcTransferDao implements TransferDao {
             newTransferId = jdbcTemplate.queryForObject(sql, Long.class, transfer.getSenderId(), transfer.getRecipientId(), transfer.getTransferAmount());
         } catch (DataAccessException e) {
             return null;
+            //Need to fix error handling, if no users, needs to return error message
         }
         return getTransfer(newTransferId);
     }
@@ -48,13 +51,15 @@ public class JdbcTransferDao implements TransferDao {
 
         @Override
         public List<Transfer> transferHistory (String username){
+            List<Transfer> transferHistory = new ArrayList<>();
+            String sql;
             return null;
         }
 
-        @Override
-        public Transfer recordTransfer (Transfer transfer){
-            return null;
-        }
+//        @Override
+//        public Transfer recordTransfer (Transfer transfer){
+//            return null;
+//        }
 
         private Transfer mapRowToTransfer (SqlRowSet transferRowSet){
             Transfer transfer = new Transfer();

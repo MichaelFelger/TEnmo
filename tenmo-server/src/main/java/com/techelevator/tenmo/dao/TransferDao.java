@@ -13,7 +13,7 @@ public interface TransferDao {
 
     List<Transfer>transferHistory(String username);
 
-    Transfer recordTransfer(Transfer transfer);
+//    Transfer recordTransfer(Transfer transfer);
 
 
 
