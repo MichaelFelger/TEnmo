@@ -42,7 +42,7 @@ CREATE TABLE transfer (
 	transfer_id int NOT NULL DEFAULT nextval('seq_transfer_id'),
 	sender_account_id int NOT NULL,
 	recipient_account_id int NOT NULL,
-	--date_and_time timestamp NOT NULL DEFAULT NOW(),
+	date_and_time TIMESTAMP NOT NULL DEFAULT NOW(),
 	status varchar(20),
 	amount numeric(9,2),
 	CONSTRAINT PK_transfer_id PRIMARY KEY (transfer_id),
@@ -52,4 +52,5 @@ CREATE TABLE transfer (
 );
 
 COMMIT;
+
 

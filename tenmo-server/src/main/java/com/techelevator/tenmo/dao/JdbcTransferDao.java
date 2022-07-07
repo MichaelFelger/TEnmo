@@ -44,12 +44,7 @@ public class JdbcTransferDao implements TransferDao {
         }
         return getTransfer(newTransferId);
     }
-//        SqlRowSet transferRowSet = jdbcTemplate.queryForRowSet(sql, transfer.getSenderId(), transfer.getRecipientId(), transfer.getTimestamp(), transfer.getTransferStatus(), transfer.getTransferAmount());
-//        if (transferRowSet.next()) {
-//            return mapRowToTransfer(transferRowSet);
-//        }
-//        return null;
-//        }
+
 
         @Override
         public List<Transfer> transferHistory (String username){
