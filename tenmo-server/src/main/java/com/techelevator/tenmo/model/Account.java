@@ -34,4 +34,7 @@ public class Account {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
+
+    public void setBalance(BigDecimal balance) {
+    }
 }

@@ -4,11 +4,10 @@ import com.techelevator.tenmo.dao.*;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.security.jwt.TokenProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -27,6 +26,16 @@ public class TransferController {
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public List<User> listUsers() {
         return userDao.findAll();
+    }
+
+//    @RequestMapping(value = "/users/{username}/balance", method = RequestMethod.GET)
+//    public BigDecimal getBalance(@PathVariable String username){
+//        return accountDao.getBalanceByUsername(username);
+//    }
+
+    @RequestMapping(value = "/users/{id}/balance", method = RequestMethod.GET)
+    public BigDecimal getMyBalance(@PathVariable(name = "id") Long accountId){
+        return accountDao.getBalanceByAccountId(accountId);
     }
 
 
