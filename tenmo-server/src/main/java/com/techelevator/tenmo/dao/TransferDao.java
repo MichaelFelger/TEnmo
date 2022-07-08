@@ -11,13 +11,9 @@ public interface TransferDao {
 
     Transfer createTransfer(Transfer transfer);
 
-    List<Transfer>transferHistory(String username);
+    List<Transfer> transferHistory(String username);
 
 //    Transfer recordTransfer(Transfer transfer);
-
-
-
-
 
 
 }

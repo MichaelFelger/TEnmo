@@ -44,6 +44,12 @@ public class TransferController {
         return null;
     }
 
+    @RequestMapping(value = "/transfers/{username}", method = RequestMethod.GET)
+    public List<Transfer> transferHistory(@PathVariable(name = "username") String username){
+        return transferDao.transferHistory(username);
+    }
+
+
 
 
 

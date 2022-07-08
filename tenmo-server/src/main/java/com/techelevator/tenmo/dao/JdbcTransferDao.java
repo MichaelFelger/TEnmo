@@ -52,9 +52,21 @@ public class JdbcTransferDao implements TransferDao {
         @Override
         public List<Transfer> transferHistory (String username){
             List<Transfer> transferHistory = new ArrayList<>();
-            String sql;
-            return null;
-        }
+            String sql = "SELECT " +
+                    " username, transfer_id, transfer.sender_account_id, transfer.recipient_account_id, amount, date_and_time, status" +
+                    " FROM transfer" +
+                    " JOIN account ON transfer.recipient_account_id = account.account_id" +
+                    " OR transfer.sender_account_id = account.account_id" +
+                    " JOIN tenmo_user ON account.user_id = tenmo_user.user_id" +
+                    " WHERE username = ?";
+            SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(sql, username); // transfer.getTransferId(), transfer.getSenderId(), transfer.getRecipientId(), transfer.getTransferAmount(), transfer.getTimestamp());
+            while (sqlRowSet.next()) {
+                Transfer transfer =  mapRowToTransfer(sqlRowSet);
+                transferHistory.add(transfer);
+            }
+            return transferHistory;
+            }
+
 
 //        @Override
 //        public Transfer recordTransfer (Transfer transfer){
@@ -63,7 +75,7 @@ public class JdbcTransferDao implements TransferDao {
 
         private Transfer mapRowToTransfer (SqlRowSet transferRowSet){
             Transfer transfer = new Transfer();
-            //transfer.setTransferId(transferRowSet.getLong("transfer_id"));
+            transfer.setTransferId(transferRowSet.getLong("transfer_id"));
             transfer.setSenderId(transferRowSet.getLong("sender_account_id"));
             transfer.setRecipientId(transferRowSet.getLong("recipient_account_id"));
             transfer.setTimestamp(transferRowSet.getTimestamp("date_and_time"));
