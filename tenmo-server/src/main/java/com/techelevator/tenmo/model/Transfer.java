@@ -28,6 +28,12 @@ public class Transfer {
         this.transferAmount = transferAmount;
     }
 
+    public Transfer(Long senderId, Long recipientId, BigDecimal transferAmount){
+        this.senderId = senderId;
+        this.recipientId = recipientId;
+        this.transferAmount = transferAmount;
+    }
+
     public void setTransferId(Long transferId) {
         this.transferId = transferId;
     }

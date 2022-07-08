@@ -1,31 +1,34 @@
 package com.techelevator.tenmo.model;
 
+import org.springframework.web.bind.annotation.PostMapping;
+
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 public class TransferDTO {
 
-    @NotEmpty
-    private String senderUsername;
-    @NotEmpty
-    private String recipientUsername;
-    @NotEmpty
+    @Positive
+    private Long senderId;
+    @Positive
+    private Long recipientId;
+    @Positive
     private BigDecimal transferAmount;
 
-    public String getSenderUsername() {
-        return senderUsername;
+    public Long getSenderId() {
+        return senderId;
     }
 
-    public void setSenderUsername(String senderUsername) {
-        this.senderUsername = senderUsername;
+    public void setSenderId(Long senderId) {
+        this.senderId = senderId;
     }
 
-    public String getRecipientUsername() {
-        return recipientUsername;
+    public Long getRecipientId() {
+        return recipientId;
     }
 
-    public void setRecipientUsername(String recipientUsername) {
-        this.recipientUsername = recipientUsername;
+    public void setRecipientId(Long recipientId) {
+        this.recipientId = recipientId;
     }
 
     public BigDecimal getTransferAmount() {

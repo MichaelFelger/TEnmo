@@ -8,5 +8,7 @@ public interface AccountDao {
 
 BigDecimal getBalanceByAccountId(Long accountId);
 
+BigDecimal getBalanceByUsername(String username);
+
 
 }
