@@ -5,10 +5,12 @@ import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.TransferDTO;
 import com.techelevator.tenmo.model.User;
 import com.techelevator.tenmo.security.jwt.TokenProvider;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.annotation.HttpConstraint;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.security.Principal;
@@ -37,15 +39,16 @@ public class TransferController {
     public BigDecimal getMyBalance(@PathVariable(name = "id") Long accountId) {
         return accountDao.getBalanceByAccountId(accountId);
     }
-
+    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("isAuthenticated()")
     @PostMapping(value = "/transfers")
     public void createTransfer(Principal principal, @RequestBody @Valid TransferDTO newTransfer) {
         int checkBalance = (newTransfer.getTransferAmount().compareTo(accountDao.getBalanceByUsername(principal.getName())));
         int checkNegative = newTransfer.getTransferAmount().compareTo(BigDecimal.ZERO);
-        Transfer transfer = new Transfer((long) userDao.findIdByUsername(principal.getName()), newTransfer.getRecipientId(), newTransfer.getTransferAmount());
+        Transfer transfer = new Transfer((long) accountDao.findAccountIdByUsername(principal.getName()), newTransfer.getRecipientId(), newTransfer.getTransferAmount());
         if (checkBalance == -1 && checkNegative == 1) {
             transferDao.createTransfer(transfer);
+            transferDao.executeTransfer(transfer);
             // update executeTransfer into here
 
         }
@@ -56,5 +59,5 @@ public class TransferController {
         return transferDao.transferHistory(username);
     }
 
-    
+
 }

@@ -10,5 +10,8 @@ BigDecimal getBalanceByAccountId(Long accountId);
 
 BigDecimal getBalanceByUsername(String username);
 
+Long findAccountIdByUsername(String username);
+
+
 
 }

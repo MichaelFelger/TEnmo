@@ -13,7 +13,9 @@ public interface TransferDao {
 
     List<Transfer> transferHistory(String username);
 
-//    Transfer recordTransfer(Transfer transfer);
+    public void executeTransfer(Transfer transfer);
+
+
 
 
 }
