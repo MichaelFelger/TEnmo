@@ -34,7 +34,7 @@ public class TransferController {
 
 
     @RequestMapping(value = "/users/{id}/balance", method = RequestMethod.GET)
-    public BigDecimal getMyBalance(@PathVariable(name = "id") Long accountId){
+    public BigDecimal getMyBalance(@PathVariable(name = "id") Long accountId) {
         return accountDao.getBalanceByAccountId(accountId);
     }
 
@@ -43,20 +43,18 @@ public class TransferController {
     public void createTransfer(Principal principal, @RequestBody @Valid TransferDTO newTransfer) {
         int checkBalance = (newTransfer.getTransferAmount().compareTo(accountDao.getBalanceByUsername(principal.getName())));
         int checkNegative = newTransfer.getTransferAmount().compareTo(BigDecimal.ZERO);
-       Transfer transfer = new Transfer((long) userDao.findIdByUsername(principal.getName()), newTransfer.getRecipientId(), newTransfer.getTransferAmount());
-        if (checkBalance == -1 && checkNegative == 1){
+        Transfer transfer = new Transfer((long) userDao.findIdByUsername(principal.getName()), newTransfer.getRecipientId(), newTransfer.getTransferAmount());
+        if (checkBalance == -1 && checkNegative == 1) {
             transferDao.createTransfer(transfer);
+            // update executeTransfer into here
+
         }
     }
 
     @RequestMapping(value = "/transfers/{username}", method = RequestMethod.GET)
-    public List<Transfer> transferHistory(@PathVariable(name = "username") String username){
+    public List<Transfer> transferHistory(@PathVariable(name = "username") String username) {
         return transferDao.transferHistory(username);
     }
 
-
-
-
-
-
+    
 }

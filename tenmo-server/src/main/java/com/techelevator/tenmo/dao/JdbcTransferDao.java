@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.TransferDTO;
 import org.springframework.dao.DataAccessException;
@@ -59,7 +60,7 @@ public class JdbcTransferDao implements TransferDao {
                 " OR transfer.sender_account_id = account.account_id" +
                 " JOIN tenmo_user ON account.user_id = tenmo_user.user_id" +
                 " WHERE username = ?";
-        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(sql, username); // transfer.getTransferId(), transfer.getSenderId(), transfer.getRecipientId(), transfer.getTransferAmount(), transfer.getTimestamp());
+        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(sql, username);
         while (sqlRowSet.next()) {
             Transfer transfer = mapRowToTransfer(sqlRowSet);
             transferHistory.add(transfer);
@@ -67,12 +68,18 @@ public class JdbcTransferDao implements TransferDao {
         return transferHistory;
     }
 
+    // throw errors in case one fails - don't want to let one account be affected without the other also being affected
+    // maybe check with a boolean if true then...
+    public void executeTransfer(Transfer transfer) {
+        String sql = "UPDATE account SET balance = balance + ? WHERE account_id = ?";
+        jdbcTemplate.update(sql, transfer.getTransferAmount(), transfer.getRecipientId());
+        String sql1 = "UPDATE account SET balance = balance - ? WHERE account_id = ?";
+        jdbcTemplate.update(sql1, transfer.getTransferAmount(), transfer.getSenderId());
+    }
 
 
-//        @Override
-//        public Transfer recordTransfer (Transfer transfer){
-//            return null;
-//        }
+
+
 
     private Transfer mapRowToTransfer(SqlRowSet transferRowSet) {
         Transfer transfer = new Transfer();
