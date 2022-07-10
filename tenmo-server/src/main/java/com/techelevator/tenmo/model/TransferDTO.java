@@ -12,7 +12,7 @@ public class TransferDTO {
     private Long senderId;
     @Positive
     private Long recipientId;
-    @Positive
+    @Positive //Where should we handle non-negative transfer amounts?
     private BigDecimal transferAmount;
 
     public Long getSenderId() {
