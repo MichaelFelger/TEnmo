@@ -38,7 +38,6 @@ public class JdbcTransferDao implements TransferDao {
     public Transfer createTransfer(Transfer transfer) {
 
         String sql = "INSERT INTO transfer (sender_account_id, recipient_account_id, amount) VALUES (?, ?, ?) RETURNING transfer_id, date_and_time;";
-        //second sql statement to update balance
         Long newTransferId;
         try {
             newTransferId = jdbcTemplate.queryForObject(sql, Long.class, transfer.getSenderId(), transfer.getRecipientId(), transfer.getTransferAmount());
@@ -68,8 +67,6 @@ public class JdbcTransferDao implements TransferDao {
         return transferHistory;
     }
 
-    // throw errors in case one fails - don't want to let one account be affected without the other also being affected
-    // maybe check with a boolean if true then...
     @Override
     public void executeTransfer(Transfer transfer) {
         String sql = "UPDATE account SET balance = balance + ? WHERE account_id = ?";
@@ -77,9 +74,6 @@ public class JdbcTransferDao implements TransferDao {
         String sql1 = "UPDATE account SET balance = balance - ? WHERE account_id = ?";
         jdbcTemplate.update(sql1, transfer.getTransferAmount(), transfer.getSenderId());
     }
-
-
-
 
 
     private Transfer mapRowToTransfer(SqlRowSet transferRowSet) {

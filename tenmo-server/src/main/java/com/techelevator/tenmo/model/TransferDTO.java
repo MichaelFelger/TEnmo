@@ -8,11 +8,11 @@ import java.math.BigDecimal;
 
 public class TransferDTO {
 
-    @Positive
+    //@Positive
     private Long senderId;
-    @Positive
+    //@Positive
     private Long recipientId;
-    @Positive //Where should we handle non-negative transfer amounts?
+    //@Positive
     private BigDecimal transferAmount;
 
     public Long getSenderId() {

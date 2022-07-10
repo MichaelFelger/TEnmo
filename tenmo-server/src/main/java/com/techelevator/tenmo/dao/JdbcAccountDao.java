@@ -3,19 +3,24 @@ package com.techelevator.tenmo.dao;
 import com.techelevator.tenmo.model.Account;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class JdbcAccountDao implements AccountDao {
 
     private JdbcTemplate jdbcTemplate;
+    private AccountDao accountDao;
+    private TransferDao transferDao;
+    private UserDao userDao;
 
-    public JdbcAccountDao(JdbcTemplate jdbcTemplate){
+    public JdbcAccountDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+
 
     @Override
     public BigDecimal getBalanceByAccountId(Long accountId) {
@@ -37,11 +42,23 @@ public class JdbcAccountDao implements AccountDao {
                 "WHERE username = ?;";
         Long accountId = jdbcTemplate.queryForObject(sql, Long.class, username);
         return accountId;
-        }
+    }
+
+    // not using at the moment
+    @Override
+    public List<Account> getAllAccounts() {
+        List<Account> allAccounts = new ArrayList<>();
+        String sql = "SELECT account_id, user_id, balance FROM account";
+        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(sql);
+        while (sqlRowSet.next()) {
+            Account account = mapRowToAccount(sqlRowSet);
+            allAccounts.add(account);
+        } return allAccounts;
+    }
 
 
 
-    private Account mapRowToAccount(SqlRowSet rs){
+    private Account mapRowToAccount(SqlRowSet rs) {
         Account account = new Account();
         account.setId(rs.getLong("account_id"));
         account.setBalance(rs.getBigDecimal("balance"));

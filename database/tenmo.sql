@@ -43,7 +43,7 @@ CREATE TABLE transfer (
 	sender_account_id int NOT NULL,
 	recipient_account_id int NOT NULL,
 	date_and_time TIMESTAMP NOT NULL DEFAULT NOW(),
-	status varchar(20),
+	status varchar(20) DEFAULT 'Approved',
 	amount numeric(9,2),
 	CONSTRAINT PK_transfer_id PRIMARY KEY (transfer_id),
 	CONSTRAINT FK_sender_account_id FOREIGN KEY (sender_account_id) REFERENCES account (account_id),

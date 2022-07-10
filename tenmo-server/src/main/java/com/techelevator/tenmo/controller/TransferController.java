@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.*;
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.TransferDTO;
 import com.techelevator.tenmo.model.User;
@@ -27,6 +28,7 @@ public class TransferController {
     private TransferDao transferDao;
     private AccountDao accountDao;
     private UserDao userDao;
+    User user;
 
     public TransferController(TransferDao transferDao, AccountDao accountDao, UserDao userDao) {
         this.transferDao = transferDao;
@@ -34,9 +36,12 @@ public class TransferController {
         this.userDao = userDao;
     }
 
-    @RequestMapping(value = "/transfers/transactions/{id}", method = RequestMethod.GET)
-    public List<Transfer>transfersByUser(){
-        return null;
+    @RequestMapping(value = "/transfers/{username}/history", method = RequestMethod.GET)
+    public List<Transfer> transfersByUser(Principal principal, @PathVariable(name = "username") String username) throws AccessDeniedException {
+        if (!Objects.equals(principal.getName(), username)) {
+            throw new AccessDeniedException("ERROR: Access denied");
+        }
+        return transferDao.transferHistory(username);
     }
 
 
@@ -47,35 +52,39 @@ public class TransferController {
 
     @RequestMapping(value = "/users/{id}/balance", method = RequestMethod.GET)
     public BigDecimal getMyBalance(Principal principal, @PathVariable(name = "id") Long accountId) throws AccessDeniedException {
-        if (!Objects.equals(accountDao.findAccountIdByUsername(principal.getName()), accountId)){
+        if (!Objects.equals(accountDao.findAccountIdByUsername(principal.getName()), accountId)) {
             throw new AccessDeniedException("ERROR: Access denied");
         }
         return accountDao.getBalanceByAccountId(accountId);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-//    @PostAuthorize("#username == authentication.principal.username")
     @PostMapping(value = "/transfers")
-    public void createTransfer(Principal principal, @RequestBody @Valid TransferDTO newTransfer) {
-//        int checkBalance = (newTransfer.getTransferAmount().compareTo(accountDao.getBalanceByUsername(principal.getName())));
+    public void createTransfer(Principal principal, @RequestBody @Valid TransferDTO newTransfer) throws AccessDeniedException {
         int checkNegative = newTransfer.getTransferAmount().compareTo(BigDecimal.ZERO);
         Transfer transfer = new Transfer(accountDao.findAccountIdByUsername(principal.getName()), newTransfer.getRecipientId(), newTransfer.getTransferAmount());
-
-        if (!Objects.equals(accountDao.findAccountIdByUsername(principal.getName()), newTransfer.getSenderId())){
-           System.out.println("ERROR: Must send money from your own account.");
-       }
-        else if (Objects.equals(accountDao.findAccountIdByUsername(principal.getName()), newTransfer.getRecipientId())){
-            System.out.println("ERROR: Cannot send money to yourself.");
-        }
-        else if ((newTransfer.getTransferAmount().compareTo(accountDao.getBalanceByUsername(principal.getName()))) == 1) {
-            System.out.println("ERROR: Insufficient funds.");
-        }
-        else if (checkNegative != 1) {
-            System.out.println("ERROR: Cannot send a negative value.");
-        }
-        else{
-            transferDao.createTransfer(transfer);
-            transferDao.executeTransfer(transfer);
+        List<Account> accounts = accountDao.getAllAccounts();
+        for (Account account : accounts) {
+            if (newTransfer.getRecipientId() == account.getId()) {
+// having issues with this for each loop - it isn't looping through all of accounts - it's just sending us out to else after the first loop
+                // rather than iterating through accounts list
+                if (!Objects.equals(accountDao.findAccountIdByUsername(principal.getName()), newTransfer.getSenderId())) {
+                    throw new AccessDeniedException("ERROR: Must send money from your own account.");
+                } else if (newTransfer.getRecipientId() == null) {
+                    throw new AccessDeniedException("ERROR: Recipient account invalid.");
+                } else if (Objects.equals(accountDao.findAccountIdByUsername(principal.getName()), newTransfer.getRecipientId())) {
+                    throw new AccessDeniedException("ERROR: Cannot send money to yourself.");
+                } else if ((newTransfer.getTransferAmount().compareTo(accountDao.getBalanceByUsername(principal.getName()))) == 1) {
+                    throw new AccessDeniedException("ERROR: Insufficient funds.");
+                } else if (checkNegative != 1) {
+                    throw new AccessDeniedException("ERROR: Cannot send a negative value.");
+                } else {
+                    transferDao.createTransfer(transfer);
+                    transferDao.executeTransfer(transfer);
+                }
+            } else {
+                throw new AccessDeniedException("ERROR: Recipient account invalid.");
+            }
         }
     }
 
