@@ -65,7 +65,7 @@ public class TransferController {
         Transfer transfer = new Transfer(accountDao.findAccountIdByUsername(principal.getName()), newTransfer.getRecipientId(), newTransfer.getTransferAmount());
         List<Account> accounts = accountDao.getAllAccounts();
         for (Account account : accounts) {
-            if (newTransfer.getRecipientId() == account.getId()) {
+            if (newTransfer.getRecipientId().toString() == account.getId().toString()) {
 // having issues with this for each loop - it isn't looping through all of accounts - it's just sending us out to else after the first loop
                 // rather than iterating through accounts list
                 if (!Objects.equals(accountDao.findAccountIdByUsername(principal.getName()), newTransfer.getSenderId())) {
@@ -87,6 +87,7 @@ public class TransferController {
             }
         }
     }
+
 
     @PostAuthorize("#username == authentication.principal.username")
     @RequestMapping(value = "/transfers/{username}", method = RequestMethod.GET)
