@@ -63,14 +63,17 @@ public class TransferController {
     public void createTransfer(Principal principal, @RequestBody @Valid TransferDTO newTransfer) throws AccessDeniedException {
         int checkNegative = newTransfer.getTransferAmount().compareTo(BigDecimal.ZERO);
         Transfer transfer = new Transfer(accountDao.findAccountIdByUsername(principal.getName()), newTransfer.getRecipientId(), newTransfer.getTransferAmount());
-        List<Account> accounts = accountDao.getAllAccounts();
-        for (Account account : accounts) {
-            if (newTransfer.getRecipientId().toString() == account.getId().toString()) {
+//        List<Account> accounts = accountDao.getAllAccounts();
+//        for (Account account : accounts) {
+//            if (newTransfer.getRecipientId().toString() == account.getId().toString()) {
 // having issues with this for each loop - it isn't looping through all of accounts - it's just sending us out to else after the first loop
                 // rather than iterating through accounts list
+
                 if (!Objects.equals(accountDao.findAccountIdByUsername(principal.getName()), newTransfer.getSenderId())) {
                     throw new AccessDeniedException("ERROR: Must send money from your own account.");
                 } else if (newTransfer.getRecipientId() == null) {
+                    throw new AccessDeniedException("ERROR: Recipient account invalid.");
+                } else if (!accountDao.verifyAccount(newTransfer.getRecipientId())) {
                     throw new AccessDeniedException("ERROR: Recipient account invalid.");
                 } else if (Objects.equals(accountDao.findAccountIdByUsername(principal.getName()), newTransfer.getRecipientId())) {
                     throw new AccessDeniedException("ERROR: Cannot send money to yourself.");
@@ -82,10 +85,10 @@ public class TransferController {
                     transferDao.createTransfer(transfer);
                     transferDao.executeTransfer(transfer);
                 }
-            } else {
-                throw new AccessDeniedException("ERROR: Recipient account invalid.");
-            }
-        }
+//            } else {
+//                throw new AccessDeniedException("ERROR: Recipient account invalid.");
+//            }
+//        }
     }
 
 

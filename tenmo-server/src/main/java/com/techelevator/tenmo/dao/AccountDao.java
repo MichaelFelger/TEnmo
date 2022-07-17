@@ -12,6 +12,8 @@ public interface AccountDao {
     BigDecimal getBalanceByUsername(String username);
 
     Long findAccountIdByUsername(String username);
+
+    boolean verifyAccount(Long id);
     
     List<Account> getAllAccounts();
 }

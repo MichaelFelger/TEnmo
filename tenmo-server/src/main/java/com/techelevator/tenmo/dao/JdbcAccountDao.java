@@ -4,10 +4,12 @@ import com.techelevator.tenmo.model.Account;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class JdbcAccountDao implements AccountDao {
@@ -44,6 +46,22 @@ public class JdbcAccountDao implements AccountDao {
         return accountId;
     }
 
+
+    public boolean verifyAccount(Long id) {
+        String sql = "SELECT account_id FROM account WHERE account_id = ?";
+        try {
+            Long accountId = jdbcTemplate.queryForObject(sql, Long.class, id);
+            if (Objects.equals(accountId, id)) {
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            System.out.println("Invalid account");
+            throw new NullPointerException("Invalid account");
+        }
+
+    }
+
     // not using at the moment
     @Override
     public List<Account> getAllAccounts() {
@@ -53,9 +71,9 @@ public class JdbcAccountDao implements AccountDao {
         while (sqlRowSet.next()) {
             Account account = mapRowToAccount(sqlRowSet);
             allAccounts.add(account);
-        } return allAccounts;
+        }
+        return allAccounts;
     }
-
 
 
     private Account mapRowToAccount(SqlRowSet rs) {

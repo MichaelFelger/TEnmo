@@ -56,6 +56,13 @@ public class JdbcUserDao implements UserDao {
         throw new UsernameNotFoundException("User " + username + " was not found.");
     }
 
+    //create new method that takes id and returns user
+    //don't throw and exception
+    //return null
+    //error could be 400 bad request
+
+
+
     @Override
     public boolean create(String username, String password) {
 
